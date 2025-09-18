@@ -30,6 +30,11 @@ public class UserService implements UserDetailsService {
         return userRepo.findByEmail(username).orElseThrow(() ->new ResourceNotFoundException("There Is No user With username"));
     }
 
+
+    public UserEntity getUserById(Long userId){
+        return userRepo.findById(userId).orElseThrow(()->new ResourceNotFoundException("There Is No user With Id"+userId));
+
+    }
     public UserDTO signUp(SignUpDTO signUpDTO) {
         Optional<UserEntity> userEntity=userRepo.findByEmail(signUpDTO.getEmail());
         if(userEntity.isPresent()){

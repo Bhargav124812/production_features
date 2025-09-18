@@ -1,5 +1,6 @@
 package LearningSpring.Security.appConfig;
 
+import LearningSpring.Security.filters.JwtSecurityFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,17 +17,21 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
+    private final JwtSecurityFilter jwtSecurityFilter;
     @Bean
     SecurityFilterChain customSecurityChain(HttpSecurity httpSecurity)throws Exception{
         httpSecurity.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/post", "/error","/auth/**").permitAll()
-                        .requestMatchers("/post/**").hasAnyRole("ADMIN")
+                        //.requestMatchers("/post/**").hasAnyRole("ADMIN")
                         .anyRequest().authenticated())
+                .addFilterBefore(jwtSecurityFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(csrfConfig -> csrfConfig.disable());
 
         return httpSecurity.build();
@@ -50,9 +55,5 @@ public class WebSecurityConfig {
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
         return authenticationConfiguration.getAuthenticationManager();
-    }
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }

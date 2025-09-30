@@ -36,6 +36,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/post", "/error","/auth/**", "/home.html").permitAll()
                         //.requestMatchers("/post/**").hasAnyRole("ADMIN")
                         .anyRequest().authenticated())
+                .csrf(csrf -> csrf.disable())
                 .addFilterBefore(jwtSecurityFilter, UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oauth2Config -> oauth2Config
                         .failureUrl("/login?error=true")

@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
@@ -26,6 +27,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final UserService userService;
 
     private final JWTService jwtService;
+
+    @Value("${deploy.env}")
+    private String deployEnv;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -47,6 +51,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
          String RefreshToken= jwtService.generateRefreshToken(user);
         Cookie cookie = new Cookie("refreshToken", RefreshToken);
         cookie.setHttpOnly(true);
+        cookie.setSecure("production".equals(deployEnv));
         response.addCookie(cookie);
 
         String frontEndUrl = "http://localhost:9000/home.html?token="+AccessToken;

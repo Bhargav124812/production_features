@@ -1,6 +1,8 @@
 package LearningSpring.Security;
 
+import LearningSpring.Security.entity.SessionLimit;
 import LearningSpring.Security.entity.UserEntity;
+import LearningSpring.Security.repo.Session_LimitRepo;
 import LearningSpring.Security.service.JWTService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +14,15 @@ class LearningSpringApplicationTests {
     @Autowired
     private JWTService jwtService;
 
+    @Autowired
+    private SessionLimit sessionLimit;
+
+    @Autowired
+    private Session_LimitRepo sessionLimitRepo;
+
 	@Test
 	void contextLoads() {
-        UserEntity user=new UserEntity(4L,"bhargav@gmail.com","bhargav@123");
-        String token=jwtService.generateJwtToken(user);
-        System.out.println(token);
-        System.out.println(jwtService.getIdFromTheToken(token));
+
 	}
 
 }

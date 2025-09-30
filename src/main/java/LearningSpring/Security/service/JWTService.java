@@ -29,7 +29,7 @@ public class JWTService {
                 .claim("email",user.getEmail())
                 .claim("role", Set.of("ADMIN,USER"))
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis()+1000*20))
+                .expiration(new Date(System.currentTimeMillis()+1000*180))
                .signWith(getSecreteKey())
                .compact();
 
@@ -47,7 +47,7 @@ public class JWTService {
         return Jwts.builder()
                 .subject(user.getId().toString())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis()+1000*120))
+                .expiration(new Date(System.currentTimeMillis()+1000*600))
                 .signWith(getSecreteKey())
                 .compact();
 

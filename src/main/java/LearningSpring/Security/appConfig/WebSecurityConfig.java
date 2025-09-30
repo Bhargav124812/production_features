@@ -1,6 +1,7 @@
 package LearningSpring.Security.appConfig;
 
 import LearningSpring.Security.filters.JwtSecurityFilter;
+import LearningSpring.Security.handler.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,14 +27,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
     private final JwtSecurityFilter jwtSecurityFilter;
+
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+
     @Bean
     SecurityFilterChain customSecurityChain(HttpSecurity httpSecurity)throws Exception{
         httpSecurity.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/post", "/error","/auth/**").permitAll()
+                        .requestMatchers("/post", "/error","/auth/**", "/home.html").permitAll()
                         //.requestMatchers("/post/**").hasAnyRole("ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtSecurityFilter, UsernamePasswordAuthenticationFilter.class)
-                .csrf(csrfConfig -> csrfConfig.disable());
+                .oauth2Login(oauth2Config -> oauth2Config
+                        .failureUrl("/login?error=true")
+                        .successHandler(oAuth2SuccessHandler)
+                );
 
         return httpSecurity.build();
     }

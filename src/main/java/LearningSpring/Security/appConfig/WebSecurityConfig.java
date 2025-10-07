@@ -5,6 +5,8 @@ import LearningSpring.Security.handler.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -22,6 +24,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import static LearningSpring.Security.entity.Enum.Roles.ADMIN;
+import static LearningSpring.Security.entity.Enum.Roles.CREATOR;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -30,10 +35,16 @@ public class WebSecurityConfig {
 
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
+    private static final String[] publicRoutes = {
+            "/error", "/auth/**", "/home.html"
+    };
+
     @Bean
     SecurityFilterChain customSecurityChain(HttpSecurity httpSecurity)throws Exception{
         httpSecurity.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/post", "/error","/auth/**", "/home.html").permitAll()
+                        .requestMatchers(publicRoutes).permitAll()
+                        .requestMatchers(HttpMethod.GET,"/post/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/post/**").hasAnyRole(ADMIN.name(),CREATOR.name())
                         //.requestMatchers("/post/**").hasAnyRole("ADMIN")
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable())

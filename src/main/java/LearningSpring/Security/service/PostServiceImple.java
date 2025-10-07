@@ -38,8 +38,8 @@ public class PostServiceImple implements PostService{
 
     @Override
     public PostDTO getPostById(Long postId) {
-        UserEntity userEntity =(UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        log.info("The USer is {}",userEntity);
+//        UserEntity userEntity =(UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        log.info("The USer is {}",userEntity);
         PostEntity postEntity = postRepo.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post not found with id "+postId));
         return modelMapper.map(postEntity,PostDTO.class);
     }

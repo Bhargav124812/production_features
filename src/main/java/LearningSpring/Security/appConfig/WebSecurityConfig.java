@@ -1,5 +1,6 @@
 package LearningSpring.Security.appConfig;
 
+import LearningSpring.Security.entity.Enum.Permissions.*;
 import LearningSpring.Security.filters.JwtSecurityFilter;
 import LearningSpring.Security.handler.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import static LearningSpring.Security.entity.Enum.Permissions.*;
 import static LearningSpring.Security.entity.Enum.Roles.ADMIN;
 import static LearningSpring.Security.entity.Enum.Roles.CREATOR;
 
@@ -45,6 +47,14 @@ public class WebSecurityConfig {
                         .requestMatchers(publicRoutes).permitAll()
                         .requestMatchers(HttpMethod.GET,"/post/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/post/**").hasAnyRole(ADMIN.name(),CREATOR.name())
+                        .requestMatchers(HttpMethod.GET,"/post/**")
+                        .hasAnyAuthority(POST_VIEW.name())
+                        .requestMatchers(HttpMethod.POST,"/post/**")
+                        .hasAnyAuthority(POST_CREATE.name())
+                        .requestMatchers(HttpMethod.PUT,"/post/**")
+                        .hasAnyAuthority(POST_UPDATE.name())
+                        .requestMatchers(HttpMethod.DELETE,"/post/**")
+                        .hasAnyAuthority(POST_DELETE.name())
                         //.requestMatchers("/post/**").hasAnyRole("ADMIN")
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable())

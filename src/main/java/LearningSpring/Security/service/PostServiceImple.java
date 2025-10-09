@@ -32,7 +32,9 @@ public class PostServiceImple implements PostService{
 
     @Override
     public PostDTO createNewPost(PostDTO inputPost) {
+        UserEntity userEntity =(UserEntity)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         PostEntity postEntity= modelMapper.map(inputPost,PostEntity.class);
+        postEntity.setAuthor(userEntity);
         return modelMapper.map(postRepo.save(postEntity),PostDTO.class);
     }
 

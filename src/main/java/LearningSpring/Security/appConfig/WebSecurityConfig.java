@@ -11,6 +11,7 @@ import org.springframework.http.HttpRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
@@ -32,6 +33,7 @@ import static LearningSpring.Security.entity.Enum.Roles.CREATOR;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig {
     private final JwtSecurityFilter jwtSecurityFilter;
 
@@ -47,8 +49,6 @@ public class WebSecurityConfig {
                         .requestMatchers(publicRoutes).permitAll()
                         .requestMatchers(HttpMethod.GET,"/post/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/post/**").hasAnyRole(ADMIN.name(),CREATOR.name())
-                        .requestMatchers(HttpMethod.GET,"/post/**")
-                        .hasAnyAuthority(POST_VIEW.name())
                         .requestMatchers(HttpMethod.POST,"/post/**")
                         .hasAnyAuthority(POST_CREATE.name())
                         .requestMatchers(HttpMethod.PUT,"/post/**")

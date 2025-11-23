@@ -18,11 +18,13 @@ class ShipmentServiceImplTest {
 
     @Test
     void orderPackage() {
-        String orderString=shipmentService.orderPackage(4L);
+        String orderString=shipmentService.orderPackage(-1L);
         log.info(orderString);
     }
 
     @Test
     void trackPackage() {
+
+        shipmentService.trackPackage(4L);
     }
 }
